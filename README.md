@@ -1,8 +1,10 @@
 # Yoga & Mindfulness Studio (booking app)
 
-Small React app for a pretend yoga studio — browse published courses, book class sessions when you're logged in, and if you're marked as an organiser in the database you get an admin area to manage courses, sessions, and user profiles.
+Small React app for a pretend yoga studio - browse published courses, book class sessions when you're logged in, and if you're marked as an organiser in the database you get an admin area to manage courses, sessions, and user profiles.
 
 Backend is **Supabase** (Postgres + Auth + Row Level Security). There's no custom server in this repo; the frontend talks straight to Supabase with the anon key.
+
+Hosted at https://wad-2-9ihz.vercel.app
 
 ## Stack
 
