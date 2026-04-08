@@ -49,9 +49,63 @@ Output goes to `dist/`.
 
 ## Database / auth
 
-All the real security is in **Supabase**: tables like `courses`, `class_sessions`, `bookings`, `profiles`, plus RLS policies. This repo assumes you've already created that project and policies to match what the UI expects (published courses visible to anon, users can only mess with their own bookings, organisers can edit courses, etc.). If something 403s or returns empty, check the policies before blaming the React code.
+All the real security is in **Supabase**: tables like `courses`, `class_sessions`, `bookings`, `profiles`, plus RLS policies. If something 403s or returns empty, check the policies before blaming the React code.
 
 Organiser access is driven off `profiles.is_organiser`. Full account deletion isn't in the app — you'd do that in Supabase Auth if you need it.
+
+## Supabase setup (from scratch)
+
+If you want to run this project yourself, you need to create a Supabase project and run the schema.
+
+1. Create a new project in the Supabase dashboard.
+2. Go to **SQL Editor** → New query.
+3. Copy/paste and run:
+   - `supabase/schema.sql`
+
+This creates:
+- `profiles` (user display name + organiser flag)
+- `courses` + `class_sessions` (catalogue)
+- `bookings` (reservations)
+- RLS policies for public browsing vs logged-in bookings vs organiser admin
+- A trigger that auto-creates a `profiles` row when a user signs up (using `full_name` from signup metadata)
+
+### Make your first organiser
+
+After you sign up with your own email/password in the app, go to Supabase:
+- Table Editor → `profiles`
+- Find your `user_id`
+- Set `is_organiser = true`
+
+Now the **Admin** link will appear when you sign back in.
+
+### Auth settings
+
+In Supabase: Authentication → Providers:
+- Email/password enabled (default)
+
+If you use email confirmations, you'll need to confirm before bookings/admin work.
+
+### Local env vars
+
+Create `.env.local` with:
+
+```
+VITE_SUPABASE_URL=https://xxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=your-publishable-key
+```
+
+Get them from Supabase Settings → API (use the **publishable** key, not the secret/service key).
+
+## Deploying (Vercel)
+
+1. Import the repo into Vercel.
+2. Set env vars in Vercel (Project → Settings → Environment Variables):
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+3. Deploy.
+
+For sign-in redirects, set your deployed URL in Supabase:
+- Authentication → URL configuration → Site URL (and add it to Redirect URLs if needed)
 
 ## Project layout (roughly)
 
